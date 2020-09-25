@@ -45,7 +45,7 @@ Derive [`AsPath`](src/lib.rs#L6) and [`ParsePath`](src/lib.rs#L15) using the der
 ```rust
 #[derive(AsPath)]
 ```
-Override names using attributes:
+Override names using attributes (the default is to convert variant names to snake_case):
 ```rust
 enum Route {
     #[name = "new_name"]
