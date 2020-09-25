@@ -7,6 +7,8 @@ use std::str::FromStr;
 enum Route {
     Users(UserRoute),
     Tasks(TaskRoute),
+    #[name = ""]
+    Empty,
 }
 
 #[derive(Debug, PartialEq, AsPath)]
@@ -40,45 +42,47 @@ impl FromStr for TaskInfo {
 }
 #[test]
 fn as_path() {
-    let path = Route::Users(UserRoute::Profile(1));
-    let url = "/users/1";
-    let serialized = path.as_path();
-    assert_eq!(serialized, url);
-
-    let path = Route::Users(UserRoute::List);
-    let url = "/users/list";
-    let serialized = path.as_path();
-    assert_eq!(serialized, url);
-
-    let path = Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 }));
-    let url = "/tasks/task/1";
-    let serialized = path.as_path();
-    assert_eq!(serialized, url);
-
-    let path = Route::Tasks(TaskRoute::List);
-    let url = "/tasks";
-    let serialized = path.as_path();
-    assert_eq!(serialized, url);
+    assert_eq!(
+        Route::Users(UserRoute::Profile(1)).as_path(),
+        "/users/1"
+    );
+    assert_eq!(
+        Route::Users(UserRoute::List).as_path(),
+        "/users/list"
+    );
+    assert_eq!(
+        Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 })).as_path(),
+        "/tasks/task/1"
+    );
+    assert_eq!(
+        Route::Tasks(TaskRoute::List).as_path(),
+        "/tasks"
+    );
+    assert_eq!(
+        Route::Empty.as_path(),
+        ""
+    );
 }
 #[test]
 fn parse_path() {
-    let url = "/tasks/task/1";
-    let path = Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 }));
-    let parsed = ParsePath::parse_path(url).unwrap();
-    assert_eq!(path, parsed);
-
-    let url = "/tasks";
-    let path = Route::Tasks(TaskRoute::List);
-    let parsed = ParsePath::parse_path(url).unwrap();
-    assert_eq!(path, parsed);
-
-    let url = "/users/1";
-    let path = Route::Users(UserRoute::Profile(1));
-    let parsed = ParsePath::parse_path(url).unwrap();
-    assert_eq!(path, parsed);
-
-    let url = "/users/list";
-    let path = Route::Users(UserRoute::List);
-    let parsed = ParsePath::parse_path(url).unwrap();
-    assert_eq!(path, parsed);
+    assert_eq!(
+        Route::parse_path("/users/1").unwrap(),
+        Route::Users(UserRoute::Profile(1)),
+    );
+    assert_eq!(
+        Route::parse_path("/users/list").unwrap(),
+        Route::Users(UserRoute::List),
+    );
+    assert_eq!(
+        Route::parse_path("/tasks/task/1").unwrap(),
+        Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 })),
+    );
+    assert_eq!(
+        Route::parse_path("/tasks").unwrap(),
+        Route::Tasks(TaskRoute::List),
+    );
+    assert_eq!(
+        Route::parse_path("/").unwrap(),
+        Route::Empty,
+    );
 }
