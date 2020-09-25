@@ -41,7 +41,7 @@ fn parse_path() {
 }
 ```
 # How to use it
-Derive `AsPath` and `ParsePath` using the derive macro:
+Derive [`AsPath`](src/lib.rs#L6) and [`ParsePath`](src/lib.rs#L15) using the derive macro:
 ```rust
 #[derive(AsPath)]
 ```
