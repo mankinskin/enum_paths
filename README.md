@@ -1,5 +1,4 @@
 # enum_paths
-Derivable traits to convert nested enums to "/" separated paths
 
 Define "/" separated paths with nested enums
 
