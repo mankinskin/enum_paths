@@ -1,4 +1,3 @@
-#![feature(bool_to_option)]
 extern crate enum_paths;
 use enum_paths::*;
 use std::str::FromStr;

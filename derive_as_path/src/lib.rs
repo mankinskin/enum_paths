@@ -126,7 +126,7 @@ fn variant_snippets(variants: Iter<'_, Variant>) -> (Vec<TokenStream2>, Vec<Toke
 fn unit_variant_snippets(ident: Ident, name: Option<String>) -> (TokenStream2, TokenStream2) {
     (
         as_unit_variant(ident.clone(), name.clone()),
-        parse_unit_variant(ident.clone(), name.clone())
+        parse_unit_variant(ident, name)
     )
 }
 fn as_unit_variant(ident: Ident, name: Option<String>) -> TokenStream2 {
@@ -145,9 +145,12 @@ fn parse_unit_variant(ident: Ident, name: Option<String>) -> TokenStream2 {
             next.strip_prefix(#name).ok_or(err)
         },
         None => quote!{ 
-            next.is_empty()
-                .then_some(())
-                .ok_or(ParseError::RemainingSegments)
+            if next.is_empty() {
+                Some(())
+            } else {
+                None
+            }
+            .ok_or(ParseError::RemainingSegments)
         },
     };
     quote! {
@@ -157,7 +160,7 @@ fn parse_unit_variant(ident: Ident, name: Option<String>) -> TokenStream2 {
 fn tuple_variant_snippets(ident: Ident, name: Option<String>, fields: Iter<'_, Field>) -> (TokenStream2, TokenStream2) {
     (
         as_tuple_variant(ident.clone(), name.clone(), fields.clone()),
-        parse_tuple_variant(ident.clone(), name.clone(), fields),
+        parse_tuple_variant(ident, name, fields),
     )
 }
 fn as_tuple_variant(ident: Ident, name: Option<String>, fields: Iter<'_, Field>) -> TokenStream2 {

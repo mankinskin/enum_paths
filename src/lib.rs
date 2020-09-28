@@ -1,4 +1,3 @@
-#![feature(bool_to_option)]
 extern crate derive_as_path;
 pub use derive_as_path::*;
 use std::str::FromStr;
