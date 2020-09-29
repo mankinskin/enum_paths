@@ -53,11 +53,26 @@ pub fn derive_as_path(item: TokenStream) -> TokenStream {
     };
     let variants = variants.iter();
     let (as_snippets, parse_snippets) = variant_snippets(variants);
-    let as_impl = impl_as(ident.clone(), as_snippets);
-    let parse_impl = impl_parse(ident.clone(), parse_snippets);
+    let name = ident.to_string();
     TokenStream::from(quote!{
-        #as_impl
-        #parse_impl
+        impl AsPath for #ident {
+            fn as_path(self) -> String {
+                match self {
+                    #(#as_snippets),*
+                }
+            }
+        }
+        impl ParsePath for #ident {
+            fn parse_path(path: &str) -> Result<Self, ParseError> {
+                let next = path.trim_start_matches("/");
+                Err(ParseError::NoMatch)
+                    #(.or_else(|err|
+                        #parse_snippets
+                        )
+                    )*
+                    .map_err(|err| ParseError::By(#name.to_string(), Box::new(err)))
+            }
+        }
     })
 }
 /// extract path name from attribute
@@ -192,34 +207,5 @@ fn parse_tuple_variant(ident: Ident, name: Option<String>, fields: Iter<'_, Fiel
     };
     quote!{
         #parser.map(Self::#ident)
-    }
-}
-/// impl AsPath
-fn impl_as(ident: Ident, snippets: Vec<TokenStream2>) -> TokenStream2 {
-    quote!{
-        impl AsPath for #ident {
-            fn as_path(self) -> String {
-                match self {
-                    #(#snippets),*
-                }
-            }
-        }
-    }
-}
-/// impl ParsePath
-fn impl_parse(ident: Ident, snippets: Vec<TokenStream2>) -> TokenStream2 {
-    let name = ident.to_string();
-    quote!{
-        impl ParsePath for #ident {
-            fn parse_path(path: &str) -> Result<Self, ParseError> {
-                let next = path.trim_start_matches("/");
-                Err(ParseError::NoMatch)
-                    #(.or_else(|err|
-                        #snippets
-                        )
-                    )*
-                    .map_err(|err| ParseError::By(#name.to_string(), Box::new(err)))
-            }
-        }
     }
 }
