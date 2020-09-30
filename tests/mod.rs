@@ -69,6 +69,10 @@ fn parse_path() {
         Route::Users(UserRoute::Profile(1)),
     );
     assert_eq!(
+        Route::parse_path("users/1").unwrap(),
+        Route::Users(UserRoute::Profile(1)),
+    );
+    assert_eq!(
         Route::parse_path("/users/list").unwrap(),
         Route::Users(UserRoute::List),
     );
@@ -77,11 +81,23 @@ fn parse_path() {
         Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 })),
     );
     assert_eq!(
+        Route::parse_path("/tasks///task///2").unwrap(),
+        Route::Tasks(TaskRoute::Task(TaskInfo { id: 2 })),
+    );
+    assert_eq!(
         Route::parse_path("/tasks").unwrap(),
         Route::Tasks(TaskRoute::List),
     );
     assert_eq!(
         Route::parse_path("/").unwrap(),
+        Route::Empty,
+    );
+    assert_eq!(
+        Route::parse_path("///").unwrap(),
+        Route::Empty,
+    );
+    assert_eq!(
+        Route::parse_path("").unwrap(),
         Route::Empty,
     );
 }
