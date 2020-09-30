@@ -63,7 +63,7 @@ pub fn derive_as_path(item: TokenStream) -> TokenStream {
             }
         }
         impl ParsePath for #ident {
-            fn parse_path(path: &str) -> Result<Self, ParseError> {
+            fn parse_path(path: &str) -> std::result::Result<Self, ParseError> {
                 let next = path.trim_start_matches("/");
                 Err(ParseError::NoMatch)
                     #(.or_else(|err|
