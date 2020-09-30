@@ -21,7 +21,7 @@ pub enum ParseError {
     By(String, Box<ParseError>),
     RemainingSegments,
 }
-impl<T: FromStr + ToString> ParsePath for T {
+impl<T: FromStr + ToString + AsPath> ParsePath for T {
     fn parse_path(path: &str) -> Result<Self, ParseError> {
         path.trim_start_matches("/").parse::<T>().map_err(|_| ParseError::FromStr)
     }
