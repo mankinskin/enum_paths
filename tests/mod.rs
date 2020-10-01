@@ -6,13 +6,13 @@ use std::str::FromStr;
 enum Route {
     Users(UserRoute),
     Tasks(TaskRoute),
-    #[name = ""]
+    #[path= ""]
     Empty,
 }
 
 #[derive(Debug, PartialEq, AsPath)]
 enum UserRoute {
-    #[name = ""]
+    #[path = ""]
     Profile(u32),
     List,
 }
@@ -20,7 +20,7 @@ enum UserRoute {
 #[derive(Debug, PartialEq, AsPath)]
 enum TaskRoute {
     Task(TaskInfo),
-    #[name = ""]
+    #[path = ""]
     List,
 }
 #[derive(Debug, PartialEq)]
