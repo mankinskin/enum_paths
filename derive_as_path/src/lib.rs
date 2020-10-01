@@ -77,8 +77,8 @@ pub fn derive_as_path(item: TokenStream) -> TokenStream {
 }
 /// extract path name from attribute
 /// #[name = "name"]
-fn get_name_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
-    if !attr.path.is_ident("name") {
+fn get_path_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
+    if !attr.path.is_ident("path") {
         return Ok(None); // not our attribute
     }
     match attr.parse_meta()? {
@@ -90,9 +90,9 @@ fn get_name_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
     }
     .ok_or(Error::new_spanned(attr, "expected #[name = \"...\"]"))
 }
-fn variant_path_name(ident: Ident, attrs: std::slice::Iter<'_, Attribute>) -> Option<String> {
+fn variant_path(ident: Ident, attrs: std::slice::Iter<'_, Attribute>) -> Option<String> {
     let mut attrs = attrs.filter_map(|attr|
-        match get_name_from_attribute(attr) {
+        match get_path_from_attribute(attr) {
             Ok(op) => op,
             Err(err) => abort!(Diagnostic::new(Level::Error, err.to_string())),
         }
@@ -121,7 +121,7 @@ fn variant_snippets(variants: Iter<'_, Variant>) -> (Vec<TokenStream2>, Vec<Toke
             fields,
             ..
         } = variant;
-        let name = variant_path_name(ident.clone(), attrs.iter());
+        let name = variant_path(ident.clone(), attrs.iter());
         match fields {
             Fields::Unit => {
                 if let None = name {
