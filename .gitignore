@@ -1,3 +1,7 @@
 /target
 */target
 Cargo.lock
+
+# --- IDE metadata ---
+**/.idea
+**/.vscode
