@@ -8,26 +8,9 @@ extern crate convert_case;
 use proc_macro::{
     TokenStream,
 };
-use syn::{
-    parse_macro_input,
-    DeriveInput,
-    Ident,
-    Field,
-    Fields,
-    Data,
-    export::{
-        TokenStream2,
-    },
-    punctuated::Iter,
-    Variant,
-    Attribute,
-    LitStr,
-    parse::Result,
-    Meta,
-    Lit,
-    MetaNameValue,
-    Error,
-};
+use syn::{parse_macro_input, DeriveInput, Ident, Field, Fields, Data, export::{
+    TokenStream2,
+}, punctuated::Iter, Variant, Attribute, LitStr, parse::Result, Meta, Lit, MetaNameValue, Error, DataEnum};
 use proc_macro_error::{
     abort,
     Diagnostic,
@@ -208,4 +191,52 @@ fn parse_tuple_variant(ident: Ident, name: Option<String>, fields: Iter<'_, Fiel
     quote!{
         #parser.map(Self::#ident)
     }
+}
+
+
+#[proc_macro_derive(Named)]
+pub fn name(input: TokenStream) -> TokenStream {
+    // Parse the Input
+    let ast: DeriveInput = syn::parse(input).unwrap();
+
+    // Error out if we're not annotating an enum
+
+
+    let data: DataEnum = match ast.data {
+        Data::Enum(d) => d,
+        _ => panic!("Can generate Routes only for enum"),
+    };
+    let name = &ast.ident;
+    let variants = data.variants.iter();
+
+    // let names = extract_names(variants, name);
+
+    let arms = extract_names(variants, name);
+
+    TokenStream::from( quote! {
+        impl Named for #name {
+             fn get_name(&self) -> String {
+                match *self {
+                    #(#arms),*
+                }
+            }
+        }
+    })
+}
+
+fn extract_names(variants: Iter<Variant>, name: &Ident) -> Vec<TokenStream2> {
+    let mut extracted_names = Vec::new();
+    for v in variants {
+
+        let ident = &v.ident;
+        let named_variant = ident.to_string();
+        let params = match v.fields {
+            syn::Fields::Unit => quote! {},
+            syn::Fields::Unnamed(..) => quote! { (..) },
+            syn::Fields::Named(..) => quote! { {..} },
+        };
+
+        extracted_names.push(quote! { #name::#ident #params => #named_variant.to_string()});
+    }
+    extracted_names
 }
