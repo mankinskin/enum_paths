@@ -40,7 +40,7 @@ use convert_case::{
 };
 
 #[proc_macro_error]
-#[proc_macro_derive(AsPath, attributes(name))]
+#[proc_macro_derive(AsPath, attributes(segment_as))]
 pub fn derive_as_path(item: TokenStream) -> TokenStream {
     let DeriveInput {
         ident,
@@ -78,7 +78,7 @@ pub fn derive_as_path(item: TokenStream) -> TokenStream {
 /// extract path name from attribute
 /// #[name = "name"]
 fn get_path_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
-    if !attr.path.is_ident("path") {
+    if !attr.path.is_ident("segment_as") {
         return Ok(None); // not our attribute
     }
     match attr.parse_meta()? {
@@ -90,7 +90,7 @@ fn get_path_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
     }
     .ok_or(Error::new_spanned(attr, "expected #[name = \"...\"]"))
 }
-fn variant_path(ident: Ident, attrs: std::slice::Iter<'_, Attribute>) -> Option<String> {
+fn variant_path_segment(ident: Ident, attrs: std::slice::Iter<'_, Attribute>) -> Option<String> {
     let mut attrs = attrs.filter_map(|attr|
         match get_path_from_attribute(attr) {
             Ok(op) => op,
