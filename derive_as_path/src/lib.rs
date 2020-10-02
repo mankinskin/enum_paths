@@ -76,10 +76,8 @@ pub fn derive_as_path(item: TokenStream) -> TokenStream {
         }
     })
 }
-/// extract path name from attribute
-/// #[as_path = "path_segment"]
-fn get_path_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
-    if !attr.path.is_ident("as_path") {
+fn get_string_from_attribute(attribute_name: &str, attr: &Attribute) -> Result<Option<LitStr>> {
+    if !attr.path.is_ident(attribute_name) {
         return Ok(None); // not our attribute
     }
     match attr.parse_meta()? {
@@ -89,11 +87,11 @@ fn get_path_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
         }) => Some(Some(name)),
         _ => None,
     }
-    .ok_or(Error::new_spanned(attr, "expected #[name = \"...\"]"))
+    .ok_or(Error::new_spanned(attr, &format!("expected #[{} = \"...\"]", attribute_name)))
 }
 fn variant_path_segment(ident: Ident, attrs: std::slice::Iter<'_, Attribute>) -> Option<String> {
     let mut attrs = attrs.filter_map(|attr|
-        match get_path_from_attribute(attr) {
+        match get_string_from_attribute("as_path", attr) {
             Ok(op) => op,
             Err(err) => abort!(Diagnostic::new(Level::Error, err.to_string())),
         }
