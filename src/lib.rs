@@ -11,7 +11,7 @@ impl<T: ToString> AsPath for T {
     }
 }
 
-pub trait ParsePath : AsPath + Sized {
+pub trait ParsePath: AsPath + Sized {
     fn parse_path(route: &str) -> Result<Self, ParseError>;
 }
 #[derive(Debug)]
@@ -23,6 +23,13 @@ pub enum ParseError {
 }
 impl<T: FromStr + ToString + AsPath> ParsePath for T {
     fn parse_path(path: &str) -> Result<Self, ParseError> {
-        path.trim_start_matches("/").parse::<T>().map_err(|_| ParseError::FromStr)
+        path.trim_start_matches("/")
+            .parse::<T>()
+            .map_err(|_| ParseError::FromStr)
     }
 }
+
+pub trait Named {
+    fn get_name(&self) -> String;
+}
+
