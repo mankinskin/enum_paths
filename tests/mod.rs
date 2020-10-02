@@ -5,15 +5,15 @@ use std::str::FromStr;
 #[derive(Debug, PartialEq, AsPath, Named)]
 enum Route {
     Users(UserRoute),
-    #[segment_as = "stuff"]
+    #[as_path = "stuff"]
     Tasks(TaskRoute),
-    #[segment_as = ""]
+    #[as_path = ""]
     Empty,
 }
 
 #[derive(Debug, PartialEq, AsPath, Named)]
 enum UserRoute {
-    #[segment_as = ""]
+    #[as_path = ""]
     Profile(u32),
     List,
 }
@@ -21,7 +21,7 @@ enum UserRoute {
 #[derive(Debug, PartialEq, AsPath, Named)]
 enum TaskRoute {
     Task(TaskInfo),
-    #[segment_as = ""]
+    #[as_path = ""]
     List,
 }
 #[derive(Debug, PartialEq)]
