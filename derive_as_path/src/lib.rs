@@ -121,7 +121,7 @@ fn variant_snippets(variants: Iter<'_, Variant>) -> (Vec<TokenStream2>, Vec<Toke
             fields,
             ..
         } = variant;
-        let name = variant_path(ident.clone(), attrs.iter());
+        let name = variant_path_segment(ident.clone(), attrs.iter());
         match fields {
             Fields::Unit => {
                 if let None = name {
