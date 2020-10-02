@@ -5,14 +5,15 @@ use std::str::FromStr;
 #[derive(Debug, PartialEq, AsPath)]
 enum Route {
     Users(UserRoute),
+    #[segment_as = "stuff"]
     Tasks(TaskRoute),
-    #[path= ""]
+    #[segment_as = ""]
     Empty,
 }
 
 #[derive(Debug, PartialEq, AsPath)]
 enum UserRoute {
-    #[path = ""]
+    #[segment_as = ""]
     Profile(u32),
     List,
 }
@@ -20,7 +21,7 @@ enum UserRoute {
 #[derive(Debug, PartialEq, AsPath)]
 enum TaskRoute {
     Task(TaskInfo),
-    #[path = ""]
+    #[segment_as = ""]
     List,
 }
 #[derive(Debug, PartialEq)]
@@ -51,11 +52,11 @@ fn as_path() {
     );
     assert_eq!(
         Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 })).as_path(),
-        "/tasks/task/1"
+        "/stuff/task/1"
     );
     assert_eq!(
         Route::Tasks(TaskRoute::List).as_path(),
-        "/tasks"
+        "/stuff"
     );
     assert_eq!(
         Route::Empty.as_path(),
@@ -77,15 +78,15 @@ fn parse_path() {
         Route::Users(UserRoute::List),
     );
     assert_eq!(
-        Route::parse_path("/tasks/task/1").unwrap(),
+        Route::parse_path("/stuff/task/1").unwrap(),
         Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 })),
     );
     assert_eq!(
-        Route::parse_path("/tasks///task///2").unwrap(),
+        Route::parse_path("/stuff///task///2").unwrap(),
         Route::Tasks(TaskRoute::Task(TaskInfo { id: 2 })),
     );
     assert_eq!(
-        Route::parse_path("/tasks").unwrap(),
+        Route::parse_path("/stuff").unwrap(),
         Route::Tasks(TaskRoute::List),
     );
     assert_eq!(
