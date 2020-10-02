@@ -32,4 +32,8 @@ impl<T: FromStr + ToString + AsPath> ParsePath for T {
 pub trait Named {
     fn get_name(&self) -> String;
 }
-
+impl<T: ToString> Named for T {
+    fn get_name(&self) -> String {
+        self.to_string()
+    }
+}
