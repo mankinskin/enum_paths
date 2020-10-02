@@ -8,9 +8,27 @@ extern crate convert_case;
 use proc_macro::{
     TokenStream,
 };
-use syn::{parse_macro_input, DeriveInput, Ident, Field, Fields, Data, export::{
-    TokenStream2,
-}, punctuated::Iter, Variant, Attribute, LitStr, parse::Result, Meta, Lit, MetaNameValue, Error, DataEnum};
+use syn::{
+    parse_macro_input,
+    DeriveInput,
+    Ident,
+    Field,
+    Fields,
+    Data,
+    export::{
+        TokenStream2,
+    },
+    punctuated::Iter,
+    Variant,
+    Attribute,
+    LitStr,
+    parse::Result,
+    Meta,
+    Lit,
+    MetaNameValue,
+    Error,
+    DataEnum,
+};
 use proc_macro_error::{
     abort,
     Diagnostic,
