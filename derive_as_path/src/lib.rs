@@ -41,7 +41,7 @@ use convert_case::{
 };
 
 #[proc_macro_error]
-#[proc_macro_derive(AsPath, attributes(segment_as))]
+#[proc_macro_derive(AsPath, attributes(as_path))]
 pub fn derive_as_path(item: TokenStream) -> TokenStream {
     let DeriveInput {
         ident,
@@ -77,9 +77,9 @@ pub fn derive_as_path(item: TokenStream) -> TokenStream {
     })
 }
 /// extract path name from attribute
-/// #[name = "name"]
+/// #[as_path = "path_segment"]
 fn get_path_from_attribute(attr: &Attribute) -> Result<Option<LitStr>> {
-    if !attr.path.is_ident("segment_as") {
+    if !attr.path.is_ident("as_path") {
         return Ok(None); // not our attribute
     }
     match attr.parse_meta()? {
