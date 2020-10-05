@@ -27,7 +27,6 @@ use syn::{
     Lit,
     MetaNameValue,
     Error,
-    DataEnum,
 };
 use proc_macro_error::{
     abort,
