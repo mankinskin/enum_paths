@@ -2,7 +2,7 @@ extern crate enum_paths;
 use enum_paths::*;
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, AsPath, Named)]
+#[derive(Debug, PartialEq, AsPath)]
 enum Route {
     Users(UserRoute),
     #[as_path = "stuff"]
@@ -11,14 +11,14 @@ enum Route {
     Empty,
 }
 
-#[derive(Debug, PartialEq, AsPath, Named)]
+#[derive(Debug, PartialEq, AsPath)]
 enum UserRoute {
     #[as_path = ""]
     Profile(u32),
     List,
 }
 
-#[derive(Debug, PartialEq, AsPath, Named)]
+#[derive(Debug, PartialEq, AsPath)]
 enum TaskRoute {
     Task(TaskInfo),
     #[as_path = ""]
@@ -80,12 +80,3 @@ fn parse_path() {
     assert_eq!(Route::parse_path("///").unwrap(), Route::Empty,);
     assert_eq!(Route::parse_path("").unwrap(), Route::Empty,);
 }
-
-
-#[test]
-fn name() {
-    assert_eq!(Route::Empty.get_name(),"Empty");
-    assert_eq!(Route::Tasks(TaskRoute::Task(TaskInfo { id: 1 })).get_name(),"Tasks");
-    assert_eq!(TaskRoute::Task(TaskInfo { id: 1 }).get_name(),"Task");
-}
-
