@@ -55,22 +55,22 @@ pub fn derive_as_path(item: TokenStream) -> TokenStream {
     let (as_snippets, parse_snippets) = variant_snippets(variants);
     let name = ident.to_string();
     TokenStream::from(quote!{
-        impl AsPath for #ident {
+        impl enum_paths::AsPath for #ident {
             fn as_path(self) -> String {
                 match self {
                     #(#as_snippets),*
                 }
             }
         }
-        impl ParsePath for #ident {
-            fn parse_path(path: &str) -> std::result::Result<Self, ParseError> {
+        impl enum_paths::ParsePath for #ident {
+            fn parse_path(path: &str) -> std::result::Result<Self, enum_paths::ParseError> {
                 let next = path.trim_start_matches("/");
-                Err(ParseError::NoMatch)
+                Err(enum_paths::ParseError::NoMatch)
                     #(.or_else(|err|
                         #parse_snippets
                         )
                     )*
-                    .map_err(|err| ParseError::By(#name.to_string(), Box::new(err)))
+                    .map_err(|err| enum_paths::ParseError::By(#name.to_string(), Box::new(err)))
             }
         }
     })
@@ -163,7 +163,7 @@ fn parse_unit_variant(ident: Ident, name: Option<String>) -> TokenStream2 {
             } else {
                 None
             }
-            .ok_or(ParseError::RemainingSegments)
+            .ok_or(enum_paths::ParseError::RemainingSegments)
         },
     };
     quote! {
@@ -196,11 +196,11 @@ fn parse_tuple_variant(ident: Ident, name: Option<String>, fields: Iter<'_, Fiel
         Some(name) => quote!{ 
             next.strip_prefix(#name).ok_or(err)
                 .and_then(|rest|
-                    ParsePath::parse_path(rest)
+                    enum_paths::ParsePath::parse_path(rest)
                 )
         },
         None => quote!{ 
-            ParsePath::parse_path(next)
+            enum_paths::ParsePath::parse_path(next)
         },
     };
     quote!{
