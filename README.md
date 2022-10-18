@@ -41,12 +41,10 @@ fn parse_path() {
 }
 ```
 # How to use it
-Derive [`AsPath`](src/lib.rs#L6) and [`ParsePath`](src/lib.rs#L15) using the derive macro:
-```rust
-#[derive(AsPath)]
-```
+Derive [`AsPath`](src/lib.rs#L6) and [`ParsePath`](src/lib.rs#L15) using the derive macro.
 Override names using attributes (the default is to convert variant names to snake_case):
 ```rust
+#[derive(AsPath)]
 enum Route {
     #[name = "new_name"]
     OldName, // would have been "old_name"
