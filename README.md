@@ -21,11 +21,11 @@ And convert between them:
 fn as_path() {
     assert_eq!(
         Route::Users(UserRoute::Profile(1)).as_path(),
-        "/users/1"
+        "/users/1".to_string(),
     );
     assert_eq!(
         Route::Users(UserRoute::List).as_path(),
-        "/users/list"
+        "/users/list".to_string(),
     );
 }
 #[test]
@@ -60,7 +60,7 @@ You're good to go!
 ```rust
 assert_eq!(
     Route::MyRoute.as_path(),
-    String::new("/my_route")
+    "/my_route".to_string(),
 );
 
 match Route::parse_path("/") {
