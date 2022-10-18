@@ -58,7 +58,7 @@ enum Route {
 ```
 You're good to go!
 ```rust
-Route::OldName.as_path(); // "/new_name"
+assert_eq!(Route::OldName.as_path(), String::new("/new_name"));
 
 match Route::parse_path("/") {
     Ok(route) => log!(route),   // Route::MustBeAtTheEnd
