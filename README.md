@@ -46,6 +46,8 @@ Override names using attributes (the default is to convert variant names to snak
 ```rust
 #[derive(AsPath)]
 enum Route {
+    MyRoute, // converts to "my_route"
+    
     #[name = "new_name"]
     OldName, // would have been "old_name"
     
