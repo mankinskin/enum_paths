@@ -40,6 +40,10 @@ fn parse_path() {
     );
 }
 ```
+
+Todo:
+-[ ] more tests
+
 # How to use it
 Derive [`AsPath`](src/lib.rs#L6) and [`ParsePath`](src/lib.rs#L15) using the derive macro.
 Override names using attributes (the default is to convert variant names to snake_case):
